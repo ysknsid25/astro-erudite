@@ -1,42 +1,36 @@
 import type { IconMap, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
-  title: 'astro-erudite',
-  description:
-    'astro-erudite is a opinionated, unstyled blogging template—built with Astro, Tailwind, and shadcn/ui.',
+  title: '空の箱',
+  description: 'A blog about web development',
   href: 'https://astro-erudite.vercel.app',
-  author: 'jktrn',
-  locale: 'en-US',
-  featuredPostCount: 2,
-  postsPerPage: 3,
+  author: 'Kanon',
+  locale: 'ja-JP',
+  featuredPostCount: 5,
+  postsPerPage: 10,
 }
 
-export const NAV_LINKS: SocialLink[] = [
-  {
-    href: '/blog',
-    label: 'blog',
-  },
-  {
-    href: '/authors',
-    label: 'authors',
-  },
-  {
-    href: '/about',
-    label: 'about',
-  },
-]
+export const NAV_LINKS: SocialLink[] = []
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    href: 'https://github.com/jktrn',
+    href: 'https://github.com/ysknsid25',
     label: 'GitHub',
   },
   {
-    href: 'https://twitter.com/enscry',
+    href: 'https://x.com/ysknsid25',
     label: 'Twitter',
   },
   {
-    href: 'mailto:jason@enscribe.dev',
+    href: 'https://bsky.app/profile/ysknsid25.bsky.social',
+    label: 'Bluesky',
+  },
+  {
+    href: 'https://github.com/sponsors/ysknsid25',
+    label: 'Sponsor',
+  },
+  {
+    href: 'https://docs.google.com/forms/d/e/1FAIpQLSeH2yz8BRmSSYWsz_AwRfYbDZv3av4Spg__T60Wy_7dVJik0w/viewform',
     label: 'Email',
   },
   {
@@ -52,4 +46,6 @@ export const ICON_MAP: IconMap = {
   Twitter: 'lucide:twitter',
   Email: 'lucide:mail',
   RSS: 'lucide:rss',
+  Bluesky: 'lucide:cloud-sun',
+  Sponsor: 'lucide:heart',
 }

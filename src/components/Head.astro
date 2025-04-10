@@ -42,7 +42,21 @@ import Favicons from './Favicons.astro'
     title={SITE.title}
     href={new URL('rss.xml', Astro.site)}
   />
-
+  <script
+    is:inline
+    type="text/javascript"
+    src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+  <script is:inline type="text/javascript">
+    Hatena.Star.SiteConfig = {
+      entryNodes: {
+        '.post-container': {
+          uri: 'h1 a',
+          title: 'h1',
+          container: '.hatena-star',
+        },
+      },
+    }
+  </script>
   <Favicons />
   <ClientRouter />
 

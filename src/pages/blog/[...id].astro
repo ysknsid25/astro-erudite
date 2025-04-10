@@ -32,7 +32,7 @@ const authors = await parseAuthors(post.data.authors ?? [])
 <Layout isWide>
   <PostHead slot="head" post={post} />
   <section
-    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-md)-2rem),100%)_minmax(0px,1fr)] gap-y-6"
+    class="post-container grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-md)-2rem),100%)_minmax(0px,1fr)] gap-y-6"
   >
     <div class="col-start-2">
       <Breadcrumbs
@@ -42,25 +42,15 @@ const authors = await parseAuthors(post.data.authors ?? [])
         ]}
       />
     </div>
-    {
-      post.data.image && (
-        <Image
-          src={post.data.image}
-          alt={post.data.title}
-          width={1200}
-          height={630}
-          class="col-span-full mx-auto w-full max-w-5xl object-cover"
-        />
-      )
-    }
     <section class="col-start-2 flex flex-col gap-y-6 text-center">
       <div class="flex flex-col">
         <h1
           class="mb-2 text-4xl leading-tight font-medium text-pretty sm:text-5xl"
         >
-          {post.data.title}
+          <a href={Astro.url.pathname}>
+            {post.data.title}
+          </a>
         </h1>
-
         <div
           class="text-muted-foreground mb-4 flex flex-wrap items-center justify-center gap-2 text-sm"
         >
@@ -121,14 +111,32 @@ const authors = await parseAuthors(post.data.authors ?? [])
           }
         </div>
       </div>
-
       <PostNavigation prevPost={prev} nextPost={next} />
+
     </section>
 
     {headings.length > 0 && <TableOfContents headings={headings} />}
 
     <article class="prose col-start-2 max-w-none">
       <Content />
+      <div class="hatena-star"></div>
+      <div class="flex gap-4 mt-4">
+        <div>
+          <a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="vertical-normal" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+        </div>
+        <div class="mt-4 flex gap-4">
+          <a
+            href="https://twitter.com/share"
+            class="twitter-share-button"
+            data-show-count="false">Tweet</a
+          >
+          <script
+            is:inline
+            async
+            src="https://platform.twitter.com/widgets.js"
+            charset="utf-8"></script>
+        </div>
+      </div>
     </article>
 
     <PostNavigation prevPost={prev} nextPost={next} />
