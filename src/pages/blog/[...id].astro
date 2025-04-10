@@ -111,6 +111,23 @@ const authors = await parseAuthors(post.data.authors ?? [])
           }
         </div>
       </div>
+      <div class="flex gap-4 mt-4 justify-right">
+        <div>
+          <a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="vertical-normal" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+        </div>
+        <div class="mt-4 flex gap-4">
+          <a
+            href="https://twitter.com/share"
+            class="twitter-share-button"
+            data-show-count="false">Tweet</a
+          >
+          <script
+            is:inline
+            async
+            src="https://platform.twitter.com/widgets.js"
+            charset="utf-8"></script>
+        </div>
+      </div>
       <PostNavigation prevPost={prev} nextPost={next} />
 
     </section>
@@ -119,7 +136,6 @@ const authors = await parseAuthors(post.data.authors ?? [])
 
     <article class="prose col-start-2 max-w-none">
       <Content />
-      <div class="hatena-star"></div>
       <div class="flex gap-4 mt-4">
         <div>
           <a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="vertical-normal" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
