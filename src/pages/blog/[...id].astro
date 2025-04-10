@@ -24,6 +24,7 @@ export async function getStaticPaths() {
 
 const post = Astro.props
 const encodedTitle = encodeURIComponent(post.data.title);
+const url = `https://dev.inorinrinrin.com${Astro.url.pathname}`
 const urlForBookmark = Astro.url.toString().replace("https://", "s/");
 const currentPostId = Astro.params.id
 const { Content, headings } = await render(post)
@@ -129,7 +130,7 @@ const authors = await parseAuthors(post.data.authors ?? [])
       <div class="flex gap-2 mt-4">
         <div>
           <a
-            href={`https://twitter.com/intent/tweet?original_referer=${Astro.url}&text=${encodedTitle}&url=${Astro.url}`}
+            href={`https://twitter.com/intent/tweet?original_referer=${url}&text=${encodedTitle}&url=${url}`}
             target="_blank"
             class="inline-flex items-center gap-x-1 px-2 py-1 text-xs leading-tight font-bold text-white bg-black rounded-md hover:bg-gray-700"
           >
@@ -138,7 +139,7 @@ const authors = await parseAuthors(post.data.authors ?? [])
         </div>
         <div>
           <a
-            href={`https://bsky.app/intent/compose?text=${encodedTitle + " "+ Astro.url}`}
+            href={`https://bsky.app/intent/compose?text=${encodedTitle + " "+ url}`}
             target="_blank"
             class="inline-flex items-center gap-x-1 px-2 py-1 text-xs leading-tight font-bold text-lime-100 bg-[#1084fd] rounded-md hover:bg-blue-600"
           >
