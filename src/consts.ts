@@ -10,7 +10,16 @@ export const SITE: Site = {
   postsPerPage: 10,
 }
 
-export const NAV_LINKS: SocialLink[] = []
+export const NAV_LINKS: SocialLink[] = [
+  {
+    href: '/blog',
+    label: 'Posts',
+  },
+  {
+    href: '/tags',
+    label: 'Tags',
+  },
+]
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {

@@ -1,0 +1,78 @@
+---
+title: 'Zod v4 で破壊的変更が入りそうな件'
+description: 'deprecates `.email()` etcをはじめ、いくつかの破壊的変更が入りそう。'
+date: 2025-04-10
+tags: ['Zod']
+image: '../../../../public/static/1200x630.png'
+authors: ['Kanon']
+---
+
+日本時間で昨日の深夜にZod v4に関するchangelogが公開された。
+
+[Zod Changelog](https://v4.zod.dev/v4/changelog)
+
+うっきうきで見に行ったが、かなり破壊的な変更が入ろうとしている。
+
+# deprecates .email() etc
+
+[https://v4.zod.dev/v4/changelog#zstring-updates]
+
+元々`z.string().email()`のようにかけていたこれらは、`z.email();`と呼び出すように変更される。
+
+現行の`z.string().email()`らに関しては、
+
+> The method forms (z.string().email()) still exist and work as before, but are now deprecated. They may be removed in a future version.
+>
+> z.string().email()はまだ存在し、以前と同様に機能しますが、現在は非推奨です。将来のバージョンでは削除されるかもしれない。
+
+とのことなので、先を見据えるのなら置き換えをしていく必要がありそう。
+
+# drops z.string().ip()
+
+> This has been replaced with separate .ipv4() and .ipv6() methods. Use z.union() to combine them if you need to accept both.
+
+[https://v4.zod.dev/v4/changelog#drops-zstringip]
+
+v4では`z.string().ip()`は利用できなくなり、`z.string().ipv4()`もしくは`z.string().ipv6()`と明記する必要がある。
+
+# no longer extends Error
+
+> In Zod 4 the ZodError class no longer extends the plain JavaScript Error class. Any code that relies on instanceof Error will need to be refactored.
+
+[https://v4.zod.dev/v4/changelog#no-longer-extends-error]
+
+`ZodError`クラスはJavaScriptの`Error`クラスを継承しなくなるため、v4以降のバージョンでは以下のようにガードする必要があるようだ。
+
+```typescript {4-8}
+try {
+  z.string().parse(data)
+} catch(err) {
+  if (err instanceof Error) {
+    // handle regular Error
+  } else if (err instanceof z.ZodError) {
+    // handle ZodError
+  }
+}
+```
+
+# deprecates message
+
+> Replace message with error. The message parameter is still supported but deprecated.
+
+https://v4.zod.dev/v4/changelog#deprecates-message
+
+これまでカスタマイズエラーメッセージを設定する際は以下のように定義していた。
+
+```typescript "message"
+z.string().min(5, { message: "Too short." });
+```
+
+v4からは`message`はサポートは続くものの非推奨となり、`error`とするように言われている。
+
+```typescript "error"
+z.string().min(5, { error: "Too short." });
+```
+
+# がんばろう
+
+他にも非推奨や削除されるものも多く、結構ぶっこんだ変更をしているのでがっつりZod使ってるところはかなり大変そうだ。
