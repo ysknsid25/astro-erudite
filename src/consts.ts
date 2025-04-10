@@ -3,7 +3,7 @@ import type { IconMap, SocialLink, Site } from '@/types'
 export const SITE: Site = {
   title: '空の箱',
   description: 'A blog about web development',
-  href: 'https://astro-erudite.vercel.app',
+  href: 'https://dev.inorinrinrin.com',
   author: 'Kanon',
   locale: 'ja-JP',
   featuredPostCount: 5,
