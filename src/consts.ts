@@ -19,6 +19,10 @@ export const NAV_LINKS: SocialLink[] = [
     href: '/tags',
     label: 'Tags',
   },
+  {
+    href: '/authors',
+    label: 'Author',
+  },
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [
@@ -40,7 +44,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
   },
   {
     href: 'https://docs.google.com/forms/d/e/1FAIpQLSeH2yz8BRmSSYWsz_AwRfYbDZv3av4Spg__T60Wy_7dVJik0w/viewform',
-    label: 'Email',
+    label: 'Contact',
   },
   {
     href: '/rss.xml',
@@ -53,7 +57,7 @@ export const ICON_MAP: IconMap = {
   GitHub: 'lucide:github',
   LinkedIn: 'lucide:linkedin',
   Twitter: 'lucide:twitter',
-  Email: 'lucide:mail',
+  Contact: 'lucide:mail',
   RSS: 'lucide:rss',
   Bluesky: 'lucide:cloud-sun',
   Sponsor: 'lucide:heart',
