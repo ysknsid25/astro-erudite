@@ -61,4 +61,5 @@ export const ICON_MAP: IconMap = {
   RSS: 'lucide:rss',
   Bluesky: 'lucide:cloud-sun',
   Sponsor: 'lucide:heart',
+  Conference: 'lucide:mic',
 }
