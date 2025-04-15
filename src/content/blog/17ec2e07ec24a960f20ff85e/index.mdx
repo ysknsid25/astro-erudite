@@ -13,26 +13,26 @@ Feature Flag自体の説明はしないので知らない人は[これ](https://
 
 アプリケーション自体はFireabase SDKが入ればなんでもよかった。今回は環境作るのが爆速で個人的にも好きなHonoを使う。
 
-## 環境
+# 環境
 
 - Hono (4.7.2)
 - Firebase Admin (13.1.0)
 
-## Honoの環境を作る
+# Honoの環境を作る
 
 https://hono.dev/docs/#quick-start
 
-### 秒で終わる
+## 秒で終わる
 
 ![](2025-04-15-20-39-09.png)
 
-## Firebase Adminを初期化
+# Firebase Adminを初期化
 
 ドキュメントに書いてあるとおりやる。Firebase Projectはあらかじめ用意しておく。
 
 [https://firebase.google.com/docs/admin/setup?hl=ja:embed:cite]
 
-## Remote Configを用意する
+# Remote Configを用意する
 
 地味にわかりづらいがオプションを「サーバー」にしておく必要がある。
 
@@ -46,7 +46,7 @@ https://hono.dev/docs/#quick-start
 
 ![](2025-04-15-20-39-39.png)
 
-## Honoを修正
+# Honoを修正
 
 Hono側でFirebase SDKを初期化する。かつ、ドキュメントの説明に従ってRemote Configの読み込みを行う。
 
@@ -85,7 +85,7 @@ serve(
 
 ![](2025-04-15-20-41-11.png)
 
-## Feature Flagとして使う
+# Feature Flagとして使う
 
 本題に入っていく。今度はFeature Flagとして使うにあたり`boolean`で値を登録してみる。
 
@@ -132,7 +132,7 @@ serve(
 
 ![](2025-04-15-20-42-14.png)
 
-## おわりに
+# おわりに
 
 Remote Configがサポートしてるデータ型は文字列・数値・ブール値・JSONだ。今回は検証で1つのFeature Flagしかなかったが、通常たくさん生えてなおかつ機能のサブ機能とかが現れたりすることもあるのでJSONで管理しておくのがよさそう。
 
