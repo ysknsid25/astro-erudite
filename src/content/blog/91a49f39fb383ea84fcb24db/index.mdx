@@ -1,0 +1,125 @@
+---
+title: '<T, K extends keyof T> をちゃんと理解する'
+description: 'TypeScriptでライブラリなどを覗いているとよく見かける<T, K extends keyof T>について、問題を分解してきちんと理解する試みです。'
+date: 2024-06-20
+tags: ['TypeScript']
+image: '../../../../public/static/1200x630.png'
+authors: ['Kanon']
+---
+
+# extends
+
+この場合の`extends`の役割は**継承ではなく、制約**です。
+
+例えば以下のようなイメージ。
+
+```typescript
+type StringOrNumber<T extends string | number> = T
+type A = StringOrNumber<string>
+type B = StringOrNumber<number> 
+
+// Type 'boolean' does not satisfy the constraint 'string | number'
+type C = StringOrNumber<boolean>
+```
+
+エラーメッセージの指摘がまさにそうですよね。`T`は`the constraint 'string | number'`です。
+
+次はオブジェクト型の場合を見てみます。
+
+```typescript
+type User = {
+  id: number;
+  name: string;
+};
+
+const getUserName = <T extends User>(arg: T): string => arg.name;
+
+getUserName({ id: 123, name: 'aaa' });
+getUserName({ id: 123, name: 'aaa', email: 'aaaaaa' });
+
+// Argument of type '{ id: number; }' is not assignable to parameter of type 'User'.
+// Property 'name' is missing in type '{ id: number; }' but required in type 'User'
+getUserName({ id: 123 });
+```
+
+こちらも同じく`type 'User'では'name'が必須です`という旨のことを言われています。
+
+つまり、`K extends T`とは**少なくとも、KはTのプロパティ・型を持ってないとダメ**ということになります。
+
+# keyof
+
+こちらは比較的簡単な話で、`keyof`はオブジェクトの型からプロパティ名を型として返す型演算子です。
+
+```typescript
+type User = {
+  id: number;
+  name: string;
+};
+// このコードはどちらも同じ意味
+type UserKey = keyof User; // "id" | "name"
+
+const id: UserKey = "id"
+const useName: UserKey = "name"
+
+// Type '"age"' is not assignable to type 'keyof User'.
+const age: UserKey = "age"
+```
+
+# `<T, K extends keyof T>` を理解する
+
+例えば`T`が先ほどの`User`だったとします。そのとき、`keyof User`は`"id" | "name"`となります。
+
+かつ、`extends`をふまえると`K extends "id" | "name"`ということになります。
+
+つまり`K`は`"id"`,`"name"`, `"id" | "name"`のいずれかであれば取ることができますが、`"age"`や`"id" | "age"`をとることはできません。
+
+# で、なにが便利なの？
+
+それを知るには[type-challenges](https://github.com/type-challenges/type-challenges/blob/main/questions/00004-easy-pick/README.ja.md)のこの問題を解いてみましょう。
+
+この問題を解くためには、`extends`, `keyof`, `Mapped Types`の3つの知識を組み合わせる必要があります。
+
+> 組み込みの型ユーティリティ`Pick<T, K>`を使用せず、TからKのプロパティを抽出する型を実装します。
+
+```typescript
+interface Todo {
+  title: string
+  description: string
+  completed: boolean
+}
+
+type TodoPreview = MyPick<Todo, 'title' | 'completed'>
+
+const todo: TodoPreview = {
+    title: 'Clean room',
+    completed: false,
+}
+```
+
+ここで、`MyPick`をこのように定義することができます。
+
+```typescript
+type MyPick<T, K extends keyof T> = {
+  [key in K]: T[key]
+}
+```
+
+`K`は`T`のいずれかのプロパティとなり、そのプロパティを`key`として取り出します。
+
+その上で、`T[key]`よりプロパティ`key`に対応する型をセットします。
+
+結果として、`'title' | 'completed'`のように`Pick`したいプロパティを指定すれば、`Pick`と同等の結果を得られるというわけです。
+
+# おわりに
+
+[type-challenges](https://github.com/type-challenges/type-challenges/blob/main/questions/00004-easy-pick/README.ja.md)の初級のしょっぱなの問題がこれだったのですが、正直「むずすぎん…？」て感じでした。
+
+いくつかの基本を組み合わせて解かないとダメなので、これ完全に応用じゃん…てなりました。
+
+ただしっかり言語化していくと、とても良い勉強にはなったので良問でした👍
+
+---
+
+この記事は当初Zennで公開したものを個人ブログ開設にあたって移植したものです。
+
+https://zenn.dev/yskn_sid25/articles/da0547f3128308
