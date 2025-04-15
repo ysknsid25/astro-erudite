@@ -1,0 +1,109 @@
+---
+title: '[K, U] extends [U, K] ← ナニコレ'
+description: '「あーなるほどね」となった方はわざわざ読む必要がない記事っぽいです。'
+date: 2024-07-15
+tags: ['TypeScript']
+image: '../../../../public/static/1200x630.png'
+authors: ['Kanon']
+---
+
+タイトルは初見時の自分の気持ちでした。内容は結構あっさりしたもので、5分あれば読めると思います。
+
+「あーなるほどね」となった方はわざわざ読む必要がない記事っぽいです。
+
+# 型の互換性チェック
+
+一言で言ってしまえばそういうことです。`K`と`U`が互いに置き換え可能かどうかを確認しています。
+
+これが`K`と`U`のままだと分かりづらいのですが、適当な型に置き換えてみると分かりやすいです。
+
+```typescript
+type Test1 = [1, 1] extends [1, 1] ? true : false;  // true
+type Test2 = [number, number] extends [number, number] ? true : false;  // true
+type Test3 = [string, string] extends [string, string] ? true : false;  // true
+
+type Test4 = [1, 2] extends [2, 1] ? true : false;  // false
+type Test5 = [number, string] extends [string, number] ? true : false;  // false
+type Test6 = [boolean, string] extends [string, boolean] ? true : false;  // false
+```
+
+原理はわかったので、あとは「`[K, U] extends [U, K]`と書けば型の互換性をチェックできる」と思っておけばよさそうです。
+
+# で、なにが便利なの？
+
+以前の＜T, K extends keyof T＞の[記事](https://zenn.dev/bs_kansai/articles/da0547f3128308)と同じくこれだけ見ても何が便利かさっぱりなので、今回も[type-challengesのこの問題](https://github.com/type-challenges/type-challenges/blob/main/questions/00898-easy-includes/README.ja.md)を解いてみます。
+
+>JavaScriptのArray.include関数を型システムに実装します。この型は、2 つの引数を受け取り、trueやfalseを出力しなければなりません。
+>
+>例えば：
+>
+>type isPillarMen = Includes＜['Kars', 'Esidisi', 'Wamuu', 'Santana'], 'Dio'＞ // expected to be `false`
+
+この問題を解くために`[K, U] extends [U, K]`の知識が必要になります。
+
+答えとしては、
+
+```typescript
+type Includes<T extends readonly any[], U> =
+T extends [infer K, ...infer Rest] ?
+  [K, U] extends [U, K] ?
+    Equal<U, K>
+    : Includes<Rest, U>
+  : false
+```
+
+と書くことになります。
+
+## 解説
+
+まず`Includes<T extends readonly any[], U>`で、`Includes`の一つ目の型は読み取り専用で何かしらの配列を受け取るものとします。
+
+次に`T extends [infer K, ...infer Rest]`で、配列の先頭要素と残りの要素で型を分けます。
+
+これがなかなか面白いコードで、このように書くことで擬似的にループを表現することができるようになります。
+
+どういうことかというと、
+
+```typescript
+T extends [infer K, ...infer Rest] ?
+  [K, U] extends [U, K] ?
+    Equal<U, K>
+    : Includes<Rest, U>
+  : false
+```
+
+これにより、互換性がない場合は`false`となり、互換性があり`U, K`が同じ型であれば`true`が返ります。
+
+残った`Includes<Rest, U>`ですが、こうして再び`Rest`を使って再起的にチェックをしていくというわけです。
+
+### Equal
+
+余談ですが、しれっと出てきてる`Equal`はtype-challengesが用意してくれている型です。
+
+これも中身を見てみると…
+
+```typescript
+type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true : false
+```
+
+のように定義されています。
+
+「これなんかさっき見たくね？」という感じですが、これに近いですよね？
+
+```typescript
+type Test1 = [1, 1] extends [1, 1] ? true : false;  // true
+```
+
+この`Equal`は型関数 `<T>() => T extends X ? 1 : 2` が、型関数 `<T>() => T extends Y ? 1 : 2` に代入可能かどうかをチェックしています。もし `X` と `Y` が同じ型であれば、これらの型関数は同じ型を持つため、`true` になります。
+
+# おわりに
+
+`[K, U] extends [U, K]`もそうですが、`T extends [infer K, ...infer Rest]`もユニークな表現ですよね。
+
+まさにパズルというか、業務ロジック書くのとは違う部分の頭を使わされてる感じがします。
+
+---
+
+この記事は当初Zennで公開したものを個人ブログ開設にあたって移植したものです。
+
+https://zenn.dev/yskn_sid25/articles/87c5cde1be86b6
