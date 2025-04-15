@@ -1,0 +1,124 @@
+---
+title: '5分で再入門する npm dependencies'
+description: '最近`pnpm`のドキュメントを眺めていたんだけど、そこでよく知らない依存関係の種類が出てきた。なので、理解したことをまとめてアウトプットしておく。'
+date: 2025-03-29
+tags: ['npm']
+image: '../../../../public/static/1200x630.png'
+authors: ['Kanon']
+---
+
+最近`pnpm`のドキュメントを眺めていたんだけど、そこでよく知らない依存関係の種類が出てきた。なので、理解したことをまとめてアウトプットしておく。
+
+- そもそも依存関係とは？
+- `package-lock.json`とは？
+
+といった話は理解できている前提で書く。
+
+# dependencies
+
+最も基本となる依存関係。`npm install`すると`dependencies`に書かれたものは全てインストールされることになる。
+
+なので、本番環境で使うものしかここには入れてはいけない。
+
+# devDependencies
+
+「`dependencies`には本番環境で使うものしかいれてはいけない」と上で話した。「ではそれ以外のものはどこにいれるのか？」となるが、その答えがここ。
+
+繰り返しだがこの話自体はいろんな記事やカンファレンスのトークで擦られ続けているので、もうお腹いっぱい感がある。
+
+一応書くと、`devDependencies`にインストールするには`npm install --save-dev <package>`とする。
+
+逆に本番環境で`dependencies`のみをインストールするには、`npm install --omit=dev`と書く。
+
+ここまでは自分もちゃんと押さえられてて、以降がよく知らなかったものたち。
+
+# optionalDependencies
+
+名前的に**入れても入れなくてもどっちでもいいライブラリ**っぽいが本当に合ってるか裏を取る。
+
+[ドキュメント](https://docs.npmjs.com/cli/v6/configuring-npm/package-json#optionaldependencies)を読むと、
+
+> If a dependency can be used, but you would like npm to proceed if it cannot be found or fails to install, then you may put it in the optionalDependencies object.
+> 
+> ある依存関係が使用できるが、それが見つからなかったりインストールに失敗した場合にnpmに処理を進めさせたい場合は、optionalDependenciesオブジェクトにその依存関係を記述することができる。
+
+ということらしい。裏を返すと`optionalDependencies`を含むライブラリを配布する場合はそれが失敗したとしても動く状態にしてあげないといけないことになる。
+
+例えば[Next.jsのpackage.json](https://github.com/vercel/next.js/blob/6369981754e418c8b483d132cc5c9807264a0760/packages/next/package.json#L101-L103)を見ると、
+
+```json
+  "optionalDependencies": {
+    "sharp": "0.26.3"
+  },
+```
+
+となっている。sharpは画像変換のライブラリらしい。
+
+[https://www.npmjs.com/package/sharp:embed:cite]
+
+これがNext.jsのどの辺で使われているのを見てみると、[image-optimizer.ts](https://github.com/vercel/next.js/blob/a6375148dc698fe302d34190d8fbd812f3013b9d/packages/next/src/server/image-optimizer.ts#L51-L77)らしい。
+
+つまり「Next.jsは使いたいけど画像は別に扱わない((ぱっと思いつくのは、jsonのみを扱うREST APIサーバーを立てるとか？))」みたいなシーンでは`sharp`がなくても問題ないため、`optionalDependencies`に含まれていると思われる。
+
+# peerDependencies
+
+なんとなく**このライブラリを使うなら、○○がすでにインストールされている前提だよ！**ってことを連想させられる名前。
+
+[ドキュメント](https://docs.npmjs.com/cli/v11/configuring-npm/package-json#dependencies)を読むと、
+
+> In some cases, you want to express the compatibility of your package with a host tool or library, while not necessarily doing a require of this host. This is usually referred to as a plugin. 
+
+> 場合によっては、自分のパッケージが特定のホストツールやライブラリと互換性があることを示したいが、そのホストを直接 require する必要はないこともある。こうしたケースは、一般的に「プラグイン」と呼ばれる
+
+ということらしい。要は`peerDependencies`に書かれたライブラリは、必ずしも`peerDependencies`を要求する側でinstallする必要がないということらしい。これは実例をいくつか見るのがよさそう。
+
+例えば`optionalDependencies`に続いて[Next.jsのそれ](https://github.com/vercel/next.js/blob/6369981754e418c8b483d132cc5c9807264a0760/packages/next/package.json#L104-L110)を見てみる。
+
+```json
+  "peerDependencies": {
+    "fibers": ">= 3.1.0",
+    "node-sass": "^4.0.0 || ^5.0.0",
+    "react": "^16.6.0 || ^17",
+    "react-dom": "^16.6.0 || ^17",
+    "sass": "^1.3.0"
+  },
+```
+
+わかりやすいのはReactで、確かにNext.jsはそもそもReactがないと動かない。けどNext.jsにReactが同梱されているわけではなくて、[公式ドキュメント](https://nextjs.org/docs/app/getting-started/installation#manual-installation)の手順にもあるとおりReactは個別にインストールすることになる((たぶんこうすることで、Reactのバージョンはある程度好きに使えたりする点がメリットなんだと思う。))。
+
+あとは引用したnpmのドキュメントの通り、プラグインをみるといいのかも。ってことでeslintのpluginである[eslint-plugin-unicornのpackage.json](https://github.com/sindresorhus/eslint-plugin-unicorn/blob/052c281b7df6ace58cc2598f4e822223fea69438/package.json#L112-L114)をみると以下のようになっている。
+
+```json
+	"peerDependencies": {
+		"eslint": ">=9.22.0"
+	},
+```
+
+`eslint-plugin-unicorn`については過去に記事を書いている。
+
+[https://zenn.dev/yskn_sid25/articles/c309f804fde5a5:embed:cite]
+
+# bundleDependencies
+
+名前から一番イメージ湧かないのがこれ。
+
+[ドキュメント](https://docs.npmjs.com/cli/v11/configuring-npm/package-json#dependencies)によると、
+
+> This defines an array of package names that will be bundled when publishing the package.
+> In cases where you need to preserve npm packages locally or have them available through a single file download, you can bundle the packages in a tarball file by specifying the package names in the bundleDependencies array and executing npm pack.
+>
+> これは、パッケージの公開時にバンドルされるパッケージ名の配列を定義します。
+> npm パッケージをローカルに保存したり、単一のファイルのダウンロードで利用できるようにしたりする必要がある場合は、 bundleDependencies 配列にパッケージ名を指定して npm pack を実行することで、パッケージを tarball ファイルにバンドルできます。
+
+ということらしい。つまり、bundleDependenciesに指定したものはパッケージを公開するタイミングでこのライブラリのnode_modulesに含まれることになる。なので、
+
+- 外部に公開されていない、あるいはしていない(例えば内部用に作った)パッケージを含めたい時
+- もともとnpmリポジトリにあったけど今は配布されてなくて、自分の手元にしかなくなっちゃったライブラリ((これはリプレースを検討すべきだけど、例えばnodeのバージョン自体をあげられなくてその古いライブラリしか使えない…みたいなことは稀によくある))
+
+みたいなシーンで使うことになりそうだと思った。
+
+---
+
+この記事は当初はてなブログで公開したものを個人ブログ開設にあたって移植したものです。
+
+https://blog.inorinrinrin.com/entry/2025/03/29/113355
