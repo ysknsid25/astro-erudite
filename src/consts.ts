@@ -6,7 +6,7 @@ export const SITE: Site = {
   href: 'https://dev.inorinrinrin.com',
   author: 'Kanon',
   locale: 'ja-JP',
-  featuredPostCount: 4,
+  featuredPostCount: 3,
   postsPerPage: 10,
 }
 
