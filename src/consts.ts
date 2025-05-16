@@ -39,8 +39,8 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'Bluesky',
   },
   {
-    href: 'https://github.com/sponsors/ysknsid25',
-    label: 'Sponsor',
+    href: 'https://zenn.dev/yskn_sid25?tab=scraps',
+    label: 'Scrap',
   },
   {
     href: 'https://docs.google.com/forms/d/e/1FAIpQLSeH2yz8BRmSSYWsz_AwRfYbDZv3av4Spg__T60Wy_7dVJik0w/viewform',
@@ -62,4 +62,5 @@ export const ICON_MAP: IconMap = {
   Bluesky: 'lucide:cloud-sun',
   Sponsor: 'lucide:heart',
   Conference: 'lucide:mic',
+  Scrap: 'lucide:scroll-text',
 }
