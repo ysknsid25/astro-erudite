@@ -1,4 +1,5 @@
 import type { IconMap, SocialLink, Site } from '@/types'
+import { Pointer } from 'lucide-react'
 
 export const SITE: Site = {
   title: '空の箱',
@@ -31,12 +32,8 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'GitHub',
   },
   {
-    href: 'https://x.com/ysknsid25',
-    label: 'Twitter',
-  },
-  {
-    href: 'https://bsky.app/profile/ysknsid25.bsky.social',
-    label: 'Bluesky',
+    href: 'https://sizu.me/ysknsid25',
+    label: 'Pointer',
   },
   {
     href: 'https://zenn.dev/yskn_sid25?tab=scraps',
@@ -63,4 +60,5 @@ export const ICON_MAP: IconMap = {
   Sponsor: 'lucide:heart',
   Conference: 'lucide:mic',
   Scrap: 'lucide:scroll-text',
+  Pointer: 'lucide:pointer',
 }
