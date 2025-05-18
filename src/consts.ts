@@ -32,10 +32,6 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'GitHub',
   },
   {
-    href: 'https://sizu.me/ysknsid25',
-    label: 'Pointer',
-  },
-  {
     href: 'https://zenn.dev/yskn_sid25?tab=scraps',
     label: 'Scrap',
   },
