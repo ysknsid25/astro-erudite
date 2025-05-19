@@ -30,6 +30,7 @@ const authors = defineCollection({
     discord: z.string().url().optional(),
     bluesky: z.string().url().optional(),
     conference: z.string().url().optional(),
+    sizume: z.string().url().optional(),
   }),
 })
 
