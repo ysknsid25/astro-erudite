@@ -56,5 +56,4 @@ export const ICON_MAP: IconMap = {
   Sponsor: 'lucide:heart',
   Conference: 'lucide:mic',
   Scrap: 'lucide:scroll-text',
-  Pointer: 'lucide:pointer',
 }
